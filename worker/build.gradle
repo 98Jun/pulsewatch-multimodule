@@ -1,0 +1,15 @@
+plugins { id 'org.springframework.boot' }
+
+dependencies {
+    implementation project(':common')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // MyBatis + JDBC
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    // Kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+}

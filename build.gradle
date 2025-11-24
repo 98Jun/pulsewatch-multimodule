@@ -1,0 +1,41 @@
+plugins {
+    id 'org.springframework.boot' version '3.5.7' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+}
+
+allprojects {
+    group = 'com.pulsewatch'
+    version = '0.0.1-SNAPSHOT'
+    repositories { mavenCentral() }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        toolchain { languageVersion = JavaLanguageVersion.of(21) }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.7"
+        }
+    }
+
+    dependencies {
+        // ✅ Lombok (전체 모듈 공통)
+        compileOnly 'org.projectlombok:lombok:1.18.36'
+        annotationProcessor 'org.projectlombok:lombok:1.18.36'
+        testCompileOnly 'org.projectlombok:lombok:1.18.36'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8' // ✅ 한글 주석 깨짐 방지
+    }
+
+    tasks.withType(Test).configureEach { useJUnitPlatform() }
+}
