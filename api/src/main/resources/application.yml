@@ -38,6 +38,10 @@ springdoc:
 
 jwt:
   secret: 0J4TPHsyZ6lEHOXdxvMNz56GgyM16ItA4AF9hMv46rg=
+  access-token:
+    expire-time: 3600000
+  refresh-token:
+    expire-time: 1209600000
 
 server:
   port: 8080
