@@ -29,6 +29,7 @@ public class JwtTokenProvider {
 
     private final SecretKey key;
     private final long accessExpireMs;
+    private final long refreshExpireMs;
 
     /**
      * 생성자
@@ -38,10 +39,12 @@ public class JwtTokenProvider {
      */
     public JwtTokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.access-token.expire-time}") long accessExpireMs
+            @Value("${jwt.access-token.expire-time}") long accessExpireMs,
+            @Value("${jwt.refresh-token.expire-time}") long refreshExpireMs
     ) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.accessExpireMs = accessExpireMs;
+        this.refreshExpireMs = refreshExpireMs;
     }
 
     /**
@@ -56,7 +59,7 @@ public class JwtTokenProvider {
      * - subject, 발급 시각(issuedAt), 만료 시각(expiration), roles(claim)을 JWT payload 에 넣는다.
      * - secretKey 로 HS256 알고리즘을 사용해 토큰에 서명한 뒤 최종 문자열을 반환한다.
      */
-    public String createAccessToken(String subject, List<String> roles) {
+    public String createAccessToken(String subject, String roles) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + accessExpireMs);
 
@@ -65,10 +68,27 @@ public class JwtTokenProvider {
                 .setIssuedAt(now)
                 .setExpiration(exp)
                 .claim("roles", roles)
+                .claim("type", "access")
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+    /**
+     * Refresh Token 생성 메서드
+     *
+     * @param subject 보통 사용자 ID (나중에 이걸로 다시 Access Token 발급)
+     */
+    public String createRefreshToken(String subject) {
+        Date now = new Date();
+        Date exp = new Date(now.getTime() + refreshExpireMs);
 
+        return Jwts.builder()
+                .setSubject(subject)
+                .setIssuedAt(now)
+                .setExpiration(exp)
+                .claim("type", "refresh")       // ⭐ 리프레시 토큰임을 표시
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
     /**
      * 토큰 유효성 검증 메서드
      *

@@ -55,12 +55,4 @@ public class JoinDTO {
         }
     }
 
-    @Getter
-    @Setter
-    @Builder
-    public static class joinResponse{
-        private String id;
-        private String accessToken;
-        private String refreshToken;
-    }
 }

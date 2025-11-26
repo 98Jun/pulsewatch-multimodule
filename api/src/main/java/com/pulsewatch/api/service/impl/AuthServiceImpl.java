@@ -1,7 +1,9 @@
 package com.pulsewatch.api.service.impl;
 
+import com.pulsewatch.api.config.JwtTokenProvider;
 import com.pulsewatch.api.domain.JoinVO;
 import com.pulsewatch.api.dto.JoinDTO;
+import com.pulsewatch.api.dto.LoginDTO;
 import com.pulsewatch.api.service.AuthService;
 import com.pulsewatch.common.error.BusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -19,9 +23,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public JoinDTO.joinResponse setMemberJoin(JoinDTO.joinRequest joinRequest) {
+    public LoginDTO.loginResponse setMemberJoin(JoinDTO.joinRequest joinRequest) {
         //전화번호 검증
         if(phoneNumberCheck(joinRequest.getPhoneNumber())) throw new BusinessException("유효하지 않은 전화번호 입니다","member");
 
@@ -42,16 +48,23 @@ public class AuthServiceImpl implements AuthService {
         Integer memberJoin = authMapper.setInsertMemberJoin(joinVO);
         if(memberJoin == null || memberJoin == 0) throw new BusinessException("회원정보 저장에 실패했습니다.","member");
 
+        //jwt 토큰 생성 및 전달
+        LoginDTO.loginResponse result = getLogin(joinVO.getId(),"USER");
 
-        return null;
+        return result;
     }
 
-    //아이디 중복체크0
+    //아이디 중복체크
     @Override
     public Boolean getIdCheck(String id) {
 
         Integer result = authMapper.getIdCheck(id);
         return result == null || result <= 0;
+    }
+
+    @Override
+    public LoginDTO.loginResponse getLogin(LoginDTO.loginRequest loginRequest) {
+        return getLogin(loginRequest.getId(),"USER");
     }
 
 
@@ -109,5 +122,18 @@ public class AuthServiceImpl implements AuthService {
                 .birthDay(passwordEncoder.encode(joinVO.getBirthDay()))
                 .build();
         return result;
+    }
+
+    // 로그인
+    public LoginDTO.loginResponse getLogin(String id,String roles) {
+        String accessToken = jwtTokenProvider.createAccessToken(id, roles);
+        String refreshToken = jwtTokenProvider.createRefreshToken(id);
+
+
+        return LoginDTO.loginResponse.builder()
+                .refreshToken(refreshToken)
+                .accessToken(accessToken)
+                .id(id)
+                .build();
     }
 }

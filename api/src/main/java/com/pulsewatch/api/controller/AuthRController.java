@@ -2,6 +2,7 @@ package com.pulsewatch.api.controller;
 
 
 import com.pulsewatch.api.dto.JoinDTO;
+import com.pulsewatch.api.dto.LoginDTO;
 import com.pulsewatch.api.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,9 +24,9 @@ public class AuthRController {
     @PostMapping("join")
     @Operation(description = "회원가입", summary = "회원가입")
     @ApiResponse(responseCode = "200", description = "성공",
-            content = @Content(schema = @Schema(implementation = JoinDTO.joinResponse.class)))
-    public ResponseEntity<JoinDTO.joinResponse> setMemberJoin(@RequestBody JoinDTO.joinRequest joinRequest) {
-        JoinDTO.joinResponse result =  authService.setMemberJoin(joinRequest);
+            content = @Content(schema = @Schema(implementation = LoginDTO.loginResponse.class)))
+    public ResponseEntity<LoginDTO.loginResponse> setMemberJoin(@RequestBody JoinDTO.joinRequest joinRequest) {
+        LoginDTO.loginResponse result =  authService.setMemberJoin(joinRequest);
 
         return ResponseEntity.ok(result);
     }
@@ -41,4 +42,11 @@ public class AuthRController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("login")
+    @Operation(description = "로그인", summary = "로그인")
+    public ResponseEntity<LoginDTO.loginResponse> login(@RequestBody LoginDTO.loginRequest loginRequest) {
+        LoginDTO.loginResponse result = authService.getLogin(loginRequest);
+
+        return ResponseEntity.ok(result);
+    }
 }
