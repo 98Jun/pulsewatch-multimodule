@@ -32,7 +32,7 @@ public class JoinVO {
     @NotNull
     @NotBlank
     @Parameter(description = "생년월일", example = "1988-12-10")
-    private String birthday;
+    private String birthDay;
 
     @NotNull
     @NotBlank

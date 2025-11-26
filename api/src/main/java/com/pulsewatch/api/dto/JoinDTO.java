@@ -2,6 +2,7 @@ package com.pulsewatch.api.dto;
 
 import com.pulsewatch.api.domain.JoinVO;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -20,33 +21,33 @@ public class JoinDTO {
     public static class joinRequest{
         @NotNull
         @NotBlank
-        @Parameter(description = "아이디", example = "zxad1234")
+        @Schema(description = "아이디", example = "zxad1234")
         private String id;
 
         @NotNull
         @NotBlank
-        @Parameter(description = "비밀번호", example = "1234")
+        @Schema(description = "비밀번호", example = "1234")
         private String password;
 
         @NotNull
         @NotBlank
-        @Parameter(description = "이름", example = "박아무개")
+        @Schema(description = "이름", example = "박아무개")
         private String name;
 
         @NotNull
         @NotBlank
-        @Parameter(description = "생년월일", example = "1988-12-10")
-        private String Birthday;
+        @Schema(description = "생년월일", example = "1988-12-10")
+        private String birthDay;
 
         @NotNull
         @NotBlank
-        @Parameter(description = "휴대번호", example = "01044144524")
+        @Schema(description = "휴대번호", example = "01044144524")
         private String phoneNumber;
 
         public static JoinVO convertJoinVO(JoinDTO.joinRequest joinRequest){
             return JoinVO.builder()
                     .id(joinRequest.getId())
-                    .birthday(joinRequest.getBirthday())
+                    .birthDay(joinRequest.getBirthDay())
                     .phoneNumber(joinRequest.getPhoneNumber())
                     .password(joinRequest.getPassword())
                     .name(joinRequest.getName())

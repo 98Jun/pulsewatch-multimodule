@@ -10,4 +10,36 @@
         where
             id = #{id}
     </select>
+    <select id="getJoinCheck" parameterType="com.pulsewatch.api.domain.JoinVO" resultType="Integer">
+        select
+            count(1)
+        from
+            pulsewatch.member
+        where
+            name = #{name} and
+            phone_number = #{phoneNumber}
+    </select>
+    <insert id="setInsertMemberJoin" parameterType="com.pulsewatch.api.domain.JoinVO">
+        INSERT
+        INTO
+        pulsewatch.member
+            (
+            id,
+            password,
+            name,
+            phone_number,
+            birth_day,
+            regist_date,
+            regist_user,
+            update_user)
+        VALUES(
+                #{id},
+                #{password},
+                #{name},
+                #{phoneNumber},
+                #{birthDay},
+                now(),
+                regist_user,
+                'DOMAIN');
+    </insert>
 </mapper>

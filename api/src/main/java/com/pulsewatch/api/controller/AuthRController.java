@@ -20,8 +20,8 @@ public class AuthRController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping
-    @Operation(description = "회원가입", summary = "회원관리")
+    @PostMapping("join")
+    @Operation(description = "회원가입", summary = "회원가입")
     @ApiResponse(responseCode = "200", description = "성공",
             content = @Content(schema = @Schema(implementation = JoinDTO.joinResponse.class)))
     public ResponseEntity<JoinDTO.joinResponse> setMemberJoin(@RequestBody JoinDTO.joinRequest joinRequest) {
@@ -31,7 +31,7 @@ public class AuthRController {
     }
 
     @GetMapping("/check/id")
-    @Operation(description = "아이디 중복체크", summary = "회원관리")
+    @Operation(description = "아이디 중복체크", summary = "아이디 중복체크")
     public ResponseEntity<Boolean> getIdCheck(@RequestParam
                                               @NotNull
                                               @NotBlank
